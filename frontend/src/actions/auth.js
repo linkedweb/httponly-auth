@@ -10,6 +10,8 @@ import {
     LOAD_USER_FAIL,
     AUTHENTICATED_SUCCESS,
     AUTHENTICATED_FAIL,
+    REFRESH_SUCCESS,
+    REFRESH_FAIL,
     SET_AUTH_LOADING,
     REMOVE_AUTH_LOADING,
 } from './types';
@@ -64,6 +66,32 @@ export const check_auth_status = () => async dispatch => {
     } catch(err) {
         dispatch({
             type: AUTHENTICATED_FAIL
+        });
+    }
+};
+
+export const request_refresh = () => async dispatch => {
+    try {
+        const res = await fetch('/api/account/refresh', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+
+        if (res.status === 200) {
+            dispatch({
+                type: REFRESH_SUCCESS
+            });
+            dispatch(check_auth_status());
+        } else {
+            dispatch({
+                type: REFRESH_FAIL
+            });
+        }
+    } catch(err) {
+        dispatch({
+            type: REFRESH_FAIL
         });
     }
 };
